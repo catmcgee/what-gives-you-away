@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+data/cache/
+results/runs/
+tmp/
+*.egg-info/
+.DS_Store
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out

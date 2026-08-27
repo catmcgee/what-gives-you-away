@@ -1,0 +1,562 @@
+{
+  "plan": "reproducibility/cross_model_plan.json",
+  "plan_sha256": "25591b2972bb1a8381be7ba748943d6ae94b5424a7da88b300e92e182d01d4cd",
+  "estimand": "Cross-model rank, sign, corrected-significance, dominant-readout, and retention agreement; raw independently fitted probe-logit magnitudes are not compared across models.",
+  "comparisons": [
+    {
+      "reference_model": "unsloth/Llama-3.2-3B-Instruct",
+      "candidate_model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+      "n_cells": 36,
+      "spearman_rho": 0.9271557271557272,
+      "reference_significant_cells": 30,
+      "reference_significant_cell_names": [
+        "affect|age",
+        "affect|education",
+        "affect|gender",
+        "affect|socioeco",
+        "dialect|education",
+        "disclosure|age",
+        "disclosure|education",
+        "disclosure|gender",
+        "disclosure|socioeco",
+        "emoji|age",
+        "emoji|education",
+        "emoji|gender",
+        "emoji|socioeco",
+        "formality|gender",
+        "grammar|age",
+        "grammar|education",
+        "grammar|gender",
+        "grammar|socioeco",
+        "orthography|age",
+        "orthography|education",
+        "orthography|gender",
+        "orthography|socioeco",
+        "price|age",
+        "price|education",
+        "price|gender",
+        "price|socioeco",
+        "slang|age",
+        "slang|education",
+        "slang|gender",
+        "slang|socioeco"
+      ],
+      "candidate_significant_cells": 32,
+      "direction_agreement": {
+        "count": 30,
+        "fraction": 1.0,
+        "cells": [
+          "affect|age",
+          "affect|education",
+          "affect|gender",
+          "affect|socioeco",
+          "dialect|education",
+          "disclosure|age",
+          "disclosure|education",
+          "disclosure|gender",
+          "disclosure|socioeco",
+          "emoji|age",
+          "emoji|education",
+          "emoji|gender",
+          "emoji|socioeco",
+          "formality|gender",
+          "grammar|age",
+          "grammar|education",
+          "grammar|gender",
+          "grammar|socioeco",
+          "orthography|age",
+          "orthography|education",
+          "orthography|gender",
+          "orthography|socioeco",
+          "price|age",
+          "price|education",
+          "price|gender",
+          "price|socioeco",
+          "slang|age",
+          "slang|education",
+          "slang|gender",
+          "slang|socioeco"
+        ],
+        "disagreements": []
+      },
+      "corrected_significance_overlap": {
+        "count": 29,
+        "fraction": 0.9666666666666667,
+        "cells": [
+          "affect|age",
+          "affect|education",
+          "affect|gender",
+          "affect|socioeco",
+          "dialect|education",
+          "disclosure|age",
+          "disclosure|education",
+          "disclosure|gender",
+          "disclosure|socioeco",
+          "emoji|age",
+          "emoji|education",
+          "emoji|gender",
+          "emoji|socioeco",
+          "grammar|age",
+          "grammar|education",
+          "grammar|gender",
+          "grammar|socioeco",
+          "orthography|age",
+          "orthography|education",
+          "orthography|gender",
+          "orthography|socioeco",
+          "price|age",
+          "price|education",
+          "price|gender",
+          "price|socioeco",
+          "slang|age",
+          "slang|education",
+          "slang|gender",
+          "slang|socioeco"
+        ],
+        "not_significant": [
+          "formality|gender"
+        ]
+      },
+      "dominant_readout_agreement": {
+        "count": 8,
+        "fraction": 0.8888888888888888,
+        "matched_cues": [
+          "affect",
+          "dialect",
+          "disclosure",
+          "formality",
+          "grammar",
+          "orthography",
+          "price",
+          "slang"
+        ],
+        "reference": {
+          "affect": "socioeco",
+          "dialect": "education",
+          "disclosure": "age",
+          "emoji": "gender",
+          "formality": "age",
+          "grammar": "education",
+          "orthography": "education",
+          "price": "socioeco",
+          "slang": "age"
+        },
+        "candidate": {
+          "affect": "socioeco",
+          "dialect": "education",
+          "disclosure": "age",
+          "emoji": "age",
+          "formality": "age",
+          "grammar": "education",
+          "orthography": "education",
+          "price": "socioeco",
+          "slang": "age"
+        }
+      },
+      "persistence": {
+        "one_turn_later": {
+          "reference": {
+            "disclosure|age": 1.0091569699223746,
+            "price|socioeco": 1.0292662816265823,
+            "emoji|gender": 0.9746459067946974,
+            "slang|age": 0.6807071347391416,
+            "grammar|education": 0.41431506059267603,
+            "orthography|education": 0.5220531181448348
+          },
+          "candidate": {
+            "disclosure|age": 1.0441002390014462,
+            "price|socioeco": 1.173084716435763,
+            "emoji|gender": 1.0959351012076817,
+            "slang|age": 0.5132679669906233,
+            "grammar|education": 0.48331220562999144,
+            "orthography|education": 0.4435492912107678
+          },
+          "n_cells": 6,
+          "spearman_rho": 0.8857142857142858,
+          "mean_absolute_difference": 0.1024985063368562
+        },
+        "two_turns_later": {
+          "reference": {
+            "disclosure|age": 0.9841610096895588,
+            "price|socioeco": 1.0060931875638486,
+            "emoji|gender": 0.7913197697278099,
+            "slang|age": 0.5671706524525549,
+            "grammar|education": 0.4317588236798543,
+            "orthography|education": 0.40689663437102386
+          },
+          "candidate": {
+            "disclosure|age": 0.9821777757341047,
+            "price|socioeco": 1.154766220721539,
+            "emoji|gender": 1.4486653541584813,
+            "slang|age": 0.47451245694405936,
+            "grammar|education": 0.4640118784475738,
+            "orthography|education": 0.41648503603824566
+          },
+          "n_cells": 6,
+          "spearman_rho": 0.8285714285714287,
+          "mean_absolute_difference": 0.15708358391454214
+        }
+      }
+    },
+    {
+      "reference_model": "unsloth/Llama-3.2-3B-Instruct",
+      "candidate_model": "allenai/OLMo-2-0325-32B-Instruct",
+      "n_cells": 36,
+      "spearman_rho": 0.848906048906049,
+      "reference_significant_cells": 30,
+      "reference_significant_cell_names": [
+        "affect|age",
+        "affect|education",
+        "affect|gender",
+        "affect|socioeco",
+        "dialect|education",
+        "disclosure|age",
+        "disclosure|education",
+        "disclosure|gender",
+        "disclosure|socioeco",
+        "emoji|age",
+        "emoji|education",
+        "emoji|gender",
+        "emoji|socioeco",
+        "formality|gender",
+        "grammar|age",
+        "grammar|education",
+        "grammar|gender",
+        "grammar|socioeco",
+        "orthography|age",
+        "orthography|education",
+        "orthography|gender",
+        "orthography|socioeco",
+        "price|age",
+        "price|education",
+        "price|gender",
+        "price|socioeco",
+        "slang|age",
+        "slang|education",
+        "slang|gender",
+        "slang|socioeco"
+      ],
+      "candidate_significant_cells": 33,
+      "direction_agreement": {
+        "count": 30,
+        "fraction": 1.0,
+        "cells": [
+          "affect|age",
+          "affect|education",
+          "affect|gender",
+          "affect|socioeco",
+          "dialect|education",
+          "disclosure|age",
+          "disclosure|education",
+          "disclosure|gender",
+          "disclosure|socioeco",
+          "emoji|age",
+          "emoji|education",
+          "emoji|gender",
+          "emoji|socioeco",
+          "formality|gender",
+          "grammar|age",
+          "grammar|education",
+          "grammar|gender",
+          "grammar|socioeco",
+          "orthography|age",
+          "orthography|education",
+          "orthography|gender",
+          "orthography|socioeco",
+          "price|age",
+          "price|education",
+          "price|gender",
+          "price|socioeco",
+          "slang|age",
+          "slang|education",
+          "slang|gender",
+          "slang|socioeco"
+        ],
+        "disagreements": []
+      },
+      "corrected_significance_overlap": {
+        "count": 29,
+        "fraction": 0.9666666666666667,
+        "cells": [
+          "affect|age",
+          "affect|education",
+          "affect|gender",
+          "affect|socioeco",
+          "disclosure|age",
+          "disclosure|education",
+          "disclosure|gender",
+          "disclosure|socioeco",
+          "emoji|age",
+          "emoji|education",
+          "emoji|gender",
+          "emoji|socioeco",
+          "formality|gender",
+          "grammar|age",
+          "grammar|education",
+          "grammar|gender",
+          "grammar|socioeco",
+          "orthography|age",
+          "orthography|education",
+          "orthography|gender",
+          "orthography|socioeco",
+          "price|age",
+          "price|education",
+          "price|gender",
+          "price|socioeco",
+          "slang|age",
+          "slang|education",
+          "slang|gender",
+          "slang|socioeco"
+        ],
+        "not_significant": [
+          "dialect|education"
+        ]
+      },
+      "dominant_readout_agreement": {
+        "count": 6,
+        "fraction": 0.6666666666666666,
+        "matched_cues": [
+          "disclosure",
+          "formality",
+          "grammar",
+          "orthography",
+          "price",
+          "slang"
+        ],
+        "reference": {
+          "affect": "socioeco",
+          "dialect": "education",
+          "disclosure": "age",
+          "emoji": "gender",
+          "formality": "age",
+          "grammar": "education",
+          "orthography": "education",
+          "price": "socioeco",
+          "slang": "age"
+        },
+        "candidate": {
+          "affect": "age",
+          "dialect": "age",
+          "disclosure": "age",
+          "emoji": "age",
+          "formality": "age",
+          "grammar": "education",
+          "orthography": "education",
+          "price": "socioeco",
+          "slang": "age"
+        }
+      },
+      "persistence": {
+        "one_turn_later": {
+          "reference": {
+            "disclosure|age": 1.0091569699223746,
+            "price|socioeco": 1.0292662816265823,
+            "emoji|gender": 0.9746459067946974,
+            "slang|age": 0.6807071347391416,
+            "grammar|education": 0.41431506059267603,
+            "orthography|education": 0.5220531181448348
+          },
+          "candidate": {
+            "disclosure|age": 0.9506696693916683,
+            "price|socioeco": 0.7086388279517283,
+            "emoji|gender": 0.9326907768416519,
+            "slang|age": 0.6588107069322419,
+            "grammar|education": 0.6388148749163115,
+            "orthography|education": 0.24297838255988002
+          },
+          "n_cells": 6,
+          "spearman_rho": 0.7714285714285715,
+          "mean_absolute_difference": 0.1577568103123493
+        },
+        "two_turns_later": {
+          "reference": {
+            "disclosure|age": 0.9841610096895588,
+            "price|socioeco": 1.0060931875638486,
+            "emoji|gender": 0.7913197697278099,
+            "slang|age": 0.5671706524525549,
+            "grammar|education": 0.4317588236798543,
+            "orthography|education": 0.40689663437102386
+          },
+          "candidate": {
+            "disclosure|age": 0.8990548177034973,
+            "price|socioeco": 0.6862820478371072,
+            "emoji|gender": 0.7580063417814222,
+            "slang|age": 0.5105134669080039,
+            "grammar|education": 0.6626360262378553,
+            "orthography|education": 0.2321362913552851
+          },
+          "n_cells": 6,
+          "spearman_rho": 0.7714285714285715,
+          "mean_absolute_difference": 0.1500875817962469
+        }
+      }
+    }
+  ],
+  "probe_gate": [
+    {
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "threshold": 0.75,
+      "all_attributes_pass": true,
+      "attributes": {
+        "age": {
+          "balanced_accuracy": [
+            0.9388888888888889,
+            1.0,
+            0.95,
+            0.9611111111111111,
+            0.9666666666666667
+          ],
+          "mean": 0.9633333333333333,
+          "minimum": 0.9388888888888889,
+          "passes": true
+        },
+        "gender": {
+          "balanced_accuracy": [
+            0.9555555555555556,
+            0.9444444444444444,
+            0.9111111111111111,
+            0.8999999999999999,
+            0.9333333333333333
+          ],
+          "mean": 0.9288888888888888,
+          "minimum": 0.8999999999999999,
+          "passes": true
+        },
+        "education": {
+          "balanced_accuracy": [
+            0.9703703703703703,
+            0.9703703703703703,
+            0.9259259259259259,
+            0.9629629629629629,
+            0.9555555555555556
+          ],
+          "mean": 0.9570370370370369,
+          "minimum": 0.9259259259259259,
+          "passes": true
+        },
+        "socioeco": {
+          "balanced_accuracy": [
+            0.9629629629629629,
+            0.9481481481481482,
+            0.9851851851851853,
+            1.0,
+            0.9777777777777779
+          ],
+          "mean": 0.9748148148148148,
+          "minimum": 0.9481481481481482,
+          "passes": true
+        }
+      }
+    },
+    {
+      "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+      "threshold": 0.75,
+      "all_attributes_pass": true,
+      "attributes": {
+        "age": {
+          "balanced_accuracy": [
+            0.9388888888888889,
+            0.9777777777777779,
+            0.9666666666666667,
+            0.95,
+            0.9555555555555556
+          ],
+          "mean": 0.9577777777777777,
+          "minimum": 0.9388888888888889,
+          "passes": true
+        },
+        "gender": {
+          "balanced_accuracy": [
+            0.9444444444444444,
+            0.9333333333333333,
+            0.9666666666666667,
+            0.9666666666666667,
+            0.9333333333333333
+          ],
+          "mean": 0.9488888888888889,
+          "minimum": 0.9333333333333333,
+          "passes": true
+        },
+        "education": {
+          "balanced_accuracy": [
+            0.9555555555555556,
+            1.0,
+            0.9407407407407408,
+            0.9703703703703703,
+            0.9185185185185185
+          ],
+          "mean": 0.9570370370370369,
+          "minimum": 0.9185185185185185,
+          "passes": true
+        },
+        "socioeco": {
+          "balanced_accuracy": [
+            0.9851851851851853,
+            0.9407407407407407,
+            0.9851851851851853,
+            0.9777777777777777,
+            0.9629629629629629
+          ],
+          "mean": 0.9703703703703704,
+          "minimum": 0.9407407407407407,
+          "passes": true
+        }
+      }
+    },
+    {
+      "model": "allenai/OLMo-2-0325-32B-Instruct",
+      "threshold": 0.75,
+      "all_attributes_pass": true,
+      "attributes": {
+        "age": {
+          "balanced_accuracy": [
+            0.9777777777777779,
+            0.9888888888888889,
+            0.9555555555555555,
+            0.9555555555555556,
+            0.9833333333333334
+          ],
+          "mean": 0.9722222222222223,
+          "minimum": 0.9555555555555555,
+          "passes": true
+        },
+        "gender": {
+          "balanced_accuracy": [
+            0.9333333333333333,
+            0.8888888888888888,
+            0.9333333333333333,
+            0.8666666666666667,
+            0.8222222222222222
+          ],
+          "mean": 0.888888888888889,
+          "minimum": 0.8222222222222222,
+          "passes": true
+        },
+        "education": {
+          "balanced_accuracy": [
+            0.9555555555555556,
+            0.9703703703703703,
+            0.9777777777777779,
+            0.9777777777777779,
+            0.9481481481481482
+          ],
+          "mean": 0.965925925925926,
+          "minimum": 0.9481481481481482,
+          "passes": true
+        },
+        "socioeco": {
+          "balanced_accuracy": [
+            0.9925925925925926,
+            0.9555555555555556,
+            0.9925925925925926,
+            0.9851851851851853,
+            0.9629629629629629
+          ],
+          "mean": 0.9777777777777779,
+          "minimum": 0.9555555555555556,
+          "passes": true
+        }
+      }
+    }
+  ]
+}

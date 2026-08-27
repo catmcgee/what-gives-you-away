@@ -1,0 +1,29 @@
+{
+  "label": "cross-model-study-h100-nvl",
+  "completed_at": "2026-08-26T22:21:01Z",
+  "models": [
+    {
+      "name": "unsloth/Meta-Llama-3.1-8B-Instruct",
+      "revision": "a2856192dd7c25b842431f39c179a6c2c2f627d1",
+      "inference_dtype": "bfloat16",
+      "cue_run_batch_size": 32
+    },
+    {
+      "name": "allenai/OLMo-2-0325-32B-Instruct",
+      "revision": "b96024342a77a69aa0dda815c3454a671f477463",
+      "inference_dtype": "bfloat16",
+      "cue_run_batch_size": 16
+    }
+  ],
+  "python": "3.12.3",
+  "packages": {
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.17.1",
+    "torch": "2.9.1+cu128",
+    "transformers": "5.13.0"
+  },
+  "cuda_runtime": "12.8",
+  "gpu": "NVIDIA H100 NVL",
+  "gpu_memory_mib": 95319
+}

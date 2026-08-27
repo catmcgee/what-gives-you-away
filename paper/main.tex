@@ -1,0 +1,556 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage[hidelinks]{hyperref}
+\usepackage[round]{natbib}
+\usepackage{microtype}
+
+\title{What Gives You Away?\\ \Large How Linguistic Cues Move User Readouts Across Three Language Models}
+\author{Cat McGee}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+What makes a language model read one user as older, more educated, wealthier,
+or a different gender? We place controlled linguistic edits inside matched
+multi-turn conversations and measure their effect on four TalkTuner-style user
+readouts. The main experiment evaluates 1,025 pairs over 100 independent base
+conversations in Llama 3.2 3B. A fixed 505-pair panel is also evaluated in
+Llama 3.1 8B and OLMo 2 32B. Each model has its own five-seed ensemble of
+full-conversation probes. Every evaluation pair differs at one user turn;
+surrounding user and assistant messages are fixed.
+
+In the full 3B experiment, 30 of 36 cue-by-readout cells survive correction;
+28 move more than a matched lexical-edit control. Disclosure-to-age,
+grammar-to-education, orthography-to-education,
+price-to-socioeconomic-status, and slang-to-age form the clearest pattern.
+On the shared panel, the 8B and 32B maps correlate $.927$ and $.849$ with 3B,
+retain the direction of all 30 corrected 3B effects, and keep 29
+corrected-significant.
+
+Cue ordering is robust to independently worded conversation shells and
+readout-phrase paraphrases. Persistence is cue-dependent: direct disclosure
+remains readable after later turns, while several style effects attenuate.
+These are causal changes in fixed model readouts, not verified facts about a
+person. The results identify a stable core while showing that weak effects and
+individual cue-to-attribute assignments should not be universalized.
+\end{abstract}
+
+\section{Introduction}
+
+A user asks for an affordable hotel. Another makes the same request but says
+that price is no concern. One writes in fragments; another uses a subordinate
+clause. A third adds an emoji. These differences may be peripheral to the task,
+yet they can change the person a conversational model appears to be answering.
+
+Writing has long been known to carry information about its author
+\citep{stamatatos2009survey,schler2006blogs}. In a dialogue system, however,
+the relevant question is not simply whether demographic information can be
+predicted from a corpus. It is whether a small, controlled change to one user
+turn alters the model's internal reading of that user while the rest of the
+conversation remains unchanged.
+
+We study that question with the age, gender, education, and socioeconomic
+readouts used by TalkTuner \citep{chen2024dashboard}. A linear probe converts a
+hidden state into class logits, giving a repeatable instrument for measuring
+how an edit changes the model's elicited impression. We fit a separate
+five-seed probe ensemble for each of three models. Rows sharing a source
+generator and numeric index remain together during training and evaluation,
+so related source rows cannot cross partitions.
+
+The experimental context matters. The probes were trained on full
+conversations, so every primary measurement is made in a full conversation as
+well. Two independently worded neutral preludes place the edited message at the
+current user turn. Two further conditions move that message one or two user
+turns into the past. The paired conversations always share the same assistant
+messages, preventing a generated response from becoming an uncontrolled
+mediator.
+
+The study makes three contributions. First, it supplies a context-matched map
+from ten controlled edit categories to four user readouts. Second, it tests
+that map across 3B, 8B, and 32B checkpoints with independently trained probes
+and model-comparable endpoints. Third, it tests changes in conversation
+wording, probe seed, and readout phrase and measures how selected effects decay
+as later turns enter the context.
+
+The central result is not that every surface feature matters, or that all
+models read cues identically. It is that a stable core of the cue map survives
+substantial changes in model size and family, while some assignments---most
+clearly emoji-to-gender---do not. What a model reads from a user is a
+cue-specific, temporally updated impression rather than a universal profile.
+
+\section{Related work}
+
+\paragraph{User representations.}
+TalkTuner trains linear probes for a conversational user's age, gender,
+education, and socioeconomic status, then exposes those estimates in an
+interactive dashboard \citep{chen2024dashboard}. Related work examines implicit
+personalization and stereotype-driven user representations
+\citep{neplenbroek2025implicit}. We focus on the input evidence that moves a
+fixed user-reading interface.
+
+\paragraph{Probing and interpretation.}
+The probing literature distinguishes decodable information from information
+that a model necessarily uses \citep{hewitt2019probes,voita2020mdl,
+elazar2021amnesic}. Our paired interventions support a narrow causal claim: the
+edited cue changes the probe's readout of a fixed model state. They do not show
+that the probe label is true of the user or that the same direction governs the
+model's generated response.
+
+Prompt sensitivity is a related measurement problem: small changes to an
+evaluation prompt can alter model scores without changing the underlying task
+\citep{hua2025prompt}. We test this directly by repeating the cue matrix under
+three paraphrases of each attribute's readout phrase.
+
+\paragraph{Style and demographic inference.}
+Stylometric systems use vocabulary, syntax, spelling, and punctuation to infer
+properties of authors and documents \citep{stamatatos2009survey}. Such
+correlations can reflect both genuine population structure and dataset-specific
+stereotypes. A paired design asks a different question: after holding the
+request and conversation fixed, which individual cue changes which model
+reading?
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Model and readouts}
+
+The reference model is Llama 3.2 3B Instruct. We repeat the study on Llama 3.1
+8B Instruct, a larger checkpoint from the same model family, and OLMo 2 32B
+Instruct, a larger independently developed model
+\citep{grattafiori2024llama,olmo2024furious}. Immutable revisions are recorded
+in the repository. This is a cross-model comparison, not a factorial test of
+parameter count: model size, family, and training recipe are not independently
+varied.
+
+Each conversation is formatted with the relevant model's chat template. At
+the start of a new assistant turn, we append an attribute-specific phrase such
+as ``I think the education level of this user is''. A multinomial logistic
+regression reads the hidden state at the final token of that phrase. For hidden
+state $h$,
+
+\[
+  p(y=c\mid h)=\operatorname{softmax}_c(Wh+b).
+\]
+
+The four readouts are age, gender, education, and socioeconomic status. We fit
+the probes separately in each model using the same complete TalkTuner
+conversations and recipe. For each attribute, 300 label-complete sets sharing
+a generator folder and numeric source index are sampled. Each set stays within
+one 70/15/15 train, layer-selection, or test partition. The middle split
+selects the layer; the final split is used only for reporting. We fit five
+split seeds. Table~\ref{tab:probe-accuracy} reports held-out balanced accuracy.
+Every attribute and seed exceeds the pre-specified .75 gate.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Readout & Llama 3.2 3B & Llama 3.1 8B & OLMo 2 32B \\
+\midrule
+Age & .963 & .958 & .972 \\
+Gender & .929 & .949 & .889 \\
+Education & .957 & .957 & .966 \\
+Socioeconomic status & .975 & .970 & .978 \\
+\bottomrule
+\end{tabular}
+\caption{Mean held-out balanced accuracy across five independently split probe
+seeds. The lowest individual score is .822 for the 32B gender readout.}
+\label{tab:probe-accuracy}
+\end{table}
+
+For a matched edit from conversation $A$ to conversation $B$, the class-logit
+change is
+
+\[
+  \Delta z_c=w_c^{\top}(h_B-h_A).
+\]
+
+The intercept cancels. Both variants use the same model, conversation shell,
+readout phrase, probe seed, and readout position. The outcome for one probe is
+$\max_c|\Delta z_c|$. This measures how far the edit moves the attribute
+readout without privileging a particular class direction. Because every model
+has a separately fitted probe, raw logit magnitudes are meaningful only within
+a model; cross-model analyses compare ranks, signs, corrected significance,
+dominant readouts, and dimensionless retention ratios.
+
+\subsection{Controlled pairs}
+
+The dataset contains 1,025 pairs over 100 user messages about travel, cooking,
+small talk, technical support, health, finance and shopping, and work or
+study. Each base contributes controlled cue edits and a neutral synonym
+control. Table~\ref{tab:data} summarizes the complete dataset.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lr@{\qquad}lr}
+\toprule
+Category & Pairs & Category & Pairs \\
+\midrule
+Orthography & 184 & Explicit disclosure & 111 \\
+Emoji & 100 & Grammatical complexity & 100 \\
+Random-synonym control & 100 & Contraction/formality & 94 \\
+Slang & 94 & Affect language & 82 \\
+US-to-UK spelling & 82 & Price language & 78 \\
+\bottomrule
+\end{tabular}
+\caption{Released controlled pairs. Orthography
+includes lowercasing, punctuation removal, and typographical errors. Random
+synonym replacements provide a matched lexical-movement floor.}
+\label{tab:data}
+\end{table}
+
+A price edit may add a tight-budget or price-is-no-concern qualifier. An emoji
+edit appends one symbol. A grammar edit rewrites one sentence with more complex
+syntax while preserving the request. Orthographic edits alter capitalization,
+punctuation, or spelling. Pairs were reviewed for naturalness, a clear single
+target manipulation, and preservation of the underlying request before model
+readouts were inspected. The goal is controlled contrast rather than
+population representativeness.
+
+Every base also has a neutral synonym replacement. For each cue category, the
+analysis compares its movement with the control movement for the same base
+message. This subtracts the background movement produced by changing a word at
+all.
+
+\subsection{Conversation construction}
+
+Every pair is rendered in four conversation views. Two primary views place the
+target after independently worded neutral preludes:
+
+\begin{quote}
+\small
+\textbf{User:} I could use your help with a question.\\
+\textbf{Assistant:} Of course. What would you like help with?\\
+\textbf{User:} [target message]
+\end{quote}
+
+The second shell uses different but semantically similar wording. The other two
+views place one or two fixed assistant--user exchanges after the target before
+the readout is taken. In every view, the two variants have the same number and
+order of messages and differ at exactly one user turn. The full 3B release
+contains 4,100 rendered conversation rows.
+
+The default readout phrase is used in all four views. Three paraphrases are
+also evaluated on one current-turn shell, yielding 7,175 pair-by-condition
+measurements at 3B. The paraphrases vary wording while preserving the requested
+attribute, for example ``Based on this conversation, this user's age group
+is'' and ``My estimate of the user's age is''. A fixed panel of 505 pairs over
+48 bases is evaluated in all three models, keeping the cross-model comparison
+exactly matched.
+
+\subsection{Estimands and inference}
+
+For each pair and readout, movement is averaged across five probe seeds. The
+primary estimate then averages the two current-turn conversation shells. For
+cue category $k$ and base message $i$, let $M_{ik}$ be that average and
+$M_{i0}$ the corresponding random-synonym control. The reported effect is
+
+\[
+  \hat{\tau}_k=\frac{1}{|I_k|}\sum_{i\in I_k}(M_{ik}-M_{i0}).
+\]
+
+The base message is the independent unit. Confidence intervals use 5,000
+base-cluster bootstrap draws. Two-sided $p$-values use 10,000 sign flips at the
+base level. Benjamini--Hochberg correction covers the 36 non-control
+cue-by-attribute cells. Probe seeds and conversation shells are repeated
+measurements and are not counted as independent observations.
+
+For temporal persistence, we divide the later-turn paired effect by the
+current-turn paired effect. The ratio is computed as a ratio of means, with a
+base-cluster bootstrap interval. Conversation-shell and readout-phrase
+robustness are summarized by Spearman correlation over the full 36-cell matrix
+and by the mean absolute cell change.
+
+The cross-model endpoints were fixed before either larger cue map was
+inspected. Each is compared with the 3B panel by (i) Spearman correlation
+over the 36 primary cells, (ii) sign and corrected-significance agreement for
+the 30 3B-significant cells, (iii) agreement on the highest-moving
+readout for each of nine cue categories, and (iv) rank and absolute agreement
+for the six pre-specified retention cells. We do not attach a cell-independence
+$p$-value to the cross-model rank correlation because cells sharing cues and
+readouts are structured, not independent observations.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{The 3B cue map}
+
+Figure~\ref{fig:matrix} gives the complete 1,025-pair 3B cue map. Thirty of 36
+cells have $q<.05$: 28 move more than their matched synonym controls and two
+move less. The two negative cells are contraction-expansion-to-education and
+US-to-UK-spelling-to-socioeconomic-status. Both belong to cue categories whose
+overall movement is small.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{../results/fig_conversation_sensitivity.pdf}
+\caption{The 1,025-pair 3B experiment. (a) Movement relative to the
+matched random-edit floor, averaged across two current-turn shells and five
+full-conversation probe seeds. Bold cells have $q<.05$ after correction over
+36 comparisons. (b) Fraction of selected current-turn effects retained after
+one or two later user turns; bars are base-bootstrap 95\% intervals.}
+\label{fig:matrix}
+\end{figure}
+
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{llrr}
+\toprule
+Cue & Readout & Extra movement & 95\% CI \\
+\midrule
+Explicit disclosure & age & 1.756 & [1.515, 1.996] \\
+Grammatical complexity & education & 1.458 & [1.238, 1.685] \\
+Explicit disclosure & education & 1.448 & [1.183, 1.734] \\
+Price language & socioeconomic status & 0.915 & [0.777, 1.056] \\
+Explicit disclosure & socioeconomic status & 0.860 & [0.726, 1.003] \\
+Price language & education & 0.634 & [0.475, 0.809] \\
+Emoji & age & 0.565 & [0.479, 0.659] \\
+Slang & age & 0.547 & [0.434, 0.672] \\
+Orthography & education & 0.474 & [0.377, 0.575] \\
+\bottomrule
+\end{tabular}
+\caption{Selected primary effects. Extra movement is the category movement
+minus the matched random-synonym movement, measured in maximum absolute class
+logit change.}
+\label{tab:cues}
+\end{table}
+
+The largest effects align with recognizable kinds of evidence, but the map is
+not purely diagonal. Disclosure moves age by 1.756 logits above control and
+education by 1.448. Grammar moves education by 1.458, yet also moves age by
+0.490 and socioeconomic status by 0.329. Price language moves socioeconomic
+status by 0.915 and education by 0.634. Emoji produce broad movement across all
+four readouts, while slang most strongly moves age.
+
+Two familiar style changes contribute little or less than the lexical control.
+Contraction expansion ranges from $-0.136$ to $0.030$ across the readouts, and
+US-to-UK spelling ranges from $-0.028$ to $0.022$. The model does not treat
+every visible stylistic difference as equally informative.
+
+Categorical flips depend on the starting margin, but they give an intuitive
+scale. Grammatical complexity changes the ensemble education label in 27\% of
+its pairs, price language changes socioeconomic status in 37\%, emoji change
+gender in 30\%, and slang changes age in 22\%.
+
+\subsection{Cross-model agreement}
+
+The cue map has strong cross-model agreement (Figure~\ref{fig:cross}).
+On the shared panel, the 8B map correlates $\rho=.927$ with 3B; the 32B
+cross-family map correlates $\rho=.849$. All 30 cells that are
+corrected-significant at 3B retain a positive above-control effect in both
+models. Twenty-nine of those 30 remain corrected-significant in each larger
+model. The 8B miss is
+contraction-expansion-to-gender; the 32B miss is US-to-UK-spelling-to-education.
+Across all 36 cells, 32 are corrected-significant at 8B and 33 at 32B.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{../results/fig_cross_model.pdf}
+\caption{Cross-model agreement on the shared 505-pair, 36-cell cue map. Axes
+are within-model ranks because independently fitted probe logits do not share a
+calibrated unit. The dashed line marks identical ranks. Labels identify the
+three largest rank changes in each comparison.}
+\label{fig:cross}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & Rank $\rho$ & Same sign & Still $q<.05$ & Same top readout \\
+\midrule
+Llama 3.1 8B & .927 & 30/30 & 29/30 & 8/9 \\
+OLMo 2 32B & .849 & 30/30 & 29/30 & 6/9 \\
+\bottomrule
+\end{tabular}
+\caption{Cross-model endpoints relative to the shared-panel 3B map. Sign and
+corrected-significance columns cover the 30 3B-significant cells; the last
+column covers nine cue categories.}
+\label{tab:crossmodel}
+\end{table}
+
+The stable core is substantively recognizable. Explicit disclosure most
+strongly moves age; grammar and orthography most strongly move education;
+price language most strongly moves socioeconomic status; and slang most
+strongly moves age in all three models. Contraction expansion also remains
+age-dominant. The largest categorical exception is emoji: gender is its
+strongest readout in the 3B panel, while age is strongest at 8B and 32B. In
+OLMo 2,
+affect language and US-to-UK spelling are also age-dominant rather than
+socioeconomic- and education-dominant. The shared structure is therefore
+strong, but the winning readout for a particular cue is not universal.
+
+\subsection{Stability across context and readout wording}
+
+The two neutral conversation shells produce almost the same ordering in every
+model: $\rho=.993$ in the full 3B analysis, $.987$ at 8B, and $.995$ at 32B.
+The result therefore does not depend on one particular prelude.
+
+The readout phrase matters more, though it does not erase the map. Three
+paraphrases correlate $.926$--$.961$ with the default phrase in the full 3B run,
+$.842$--$.945$ at 8B, and $.948$--$.962$ at 32B. The rank ordering of cues is
+robust in this experiment; an individual raw logit magnitude should not be
+treated as phrase-invariant.
+
+Probe-seed ranges tell a similar story. Large effects keep their direction,
+but magnitudes vary. In the full 3B run, grammar-to-education ranges from 0.447 to
+2.474 across seeds, while emoji-to-age ranges from 0.404 to 0.854. The ensemble
+supports directional and comparative claims more strongly than a universal
+logit scale.
+
+\subsection{What remains after later turns?}
+
+The time course separates direct user-relevant content from several surface
+cues. Table~\ref{tab:persistence} reports the fraction of each current-turn
+effect retained after later neutral exchanges in all three models.
+
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Cue / readout & 3B & 8B & 32B \\
+\midrule
+\multicolumn{4}{l}{\textit{One turn later}} \\
+Disclosure / age & 1.01 & 1.04 & 0.95 \\
+Price / socioeconomic status & 1.03 & 1.17 & 0.71 \\
+Emoji / gender & 0.97 & 1.10 & 0.93 \\
+Slang / age & 0.68 & 0.51 & 0.66 \\
+Grammar / education & 0.41 & 0.48 & 0.64 \\
+Orthography / education & 0.52 & 0.44 & 0.24 \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Two turns later}} \\
+Disclosure / age & 0.98 & 0.98 & 0.90 \\
+Price / socioeconomic status & 1.01 & 1.15 & 0.69 \\
+Emoji / gender & 0.79 & 1.45 & 0.76 \\
+Slang / age & 0.57 & 0.47 & 0.51 \\
+Grammar / education & 0.43 & 0.46 & 0.66 \\
+Orthography / education & 0.41 & 0.42 & 0.23 \\
+\bottomrule
+\end{tabular}
+\caption{Ratio of later-turn to current-turn paired effects on the shared
+505-pair panel. Values above one indicate greater measured movement at
+the later readout, not a calibrated gain in memory. Bootstrap intervals for
+every cell are released with the results.}
+\label{tab:persistence}
+\end{table}
+
+Disclosure-to-age is highly persistent in every model, retaining .90--.98 of
+its current-turn effect after two turns. Slang-to-age falls to .47--.57, and
+orthography-to-education falls to .23--.42. Price-to-socioeconomic-status is
+nearly unchanged at 3B and 8B but retains .69 at 32B. Grammar-to-education also
+decays less at 32B than in either Llama model. Across the six pre-specified
+cells, the 3B retention ordering correlates $.886$ and $.829$ with 8B after one
+and two turns, and $.771$ at both lags with 32B. The broad distinction between
+durable content and fading style is visible across models, but its exact time
+course is model-dependent. The full 3B estimates are similar: after two
+turns, disclosure-to-age retains .94, price-to-socioeconomic-status 1.00,
+emoji-to-gender .79, slang-to-age .60, grammar-to-education .40, and
+orthography-to-education .41.
+
+\section{Discussion}
+
+The experiment gives a concrete answer to what makes these models revise their
+readouts of a user. Explicit self-description has the broadest direct effect.
+Outside disclosure, complex syntax and orthographic care most consistently
+move education, budget or luxury language moves socioeconomic status, and
+slang moves age. These assignments appear in the full 3B experiment and under
+separate probe training in a closely related 8B model and a cross-family 32B
+model.
+
+Several patterns resemble social stereotypes. That is a property of the model
+and readout, not evidence that a cue is a legitimate basis for judging a
+person. Emoji illustrate the problem: they are gender-dominant in the 3B
+shared panel but age-dominant in the full 3B experiment and both larger
+models. A cue can move several readouts without identifying a demographic
+fact. Controlled maps expose which harmless choices alter a personalization
+signal and which apparent rules fail to transfer.
+
+The persistence results add a second dimension. A user impression is not just
+a classification of the latest turn. Some cues continue to shape the readout
+after new messages arrive, while others are partially overwritten. Systems
+that maintain or act on user models should therefore be evaluated not only for
+which attributes they infer, but for which evidence they retain and how long it
+remains influential.
+
+The stability checks clarify what is robust. Conversation-shell wording barely
+changes cue ordering; readout phrasing and probe fitting affect magnitudes.
+Model changes preserve broad ranks while changing some dominant readouts and
+retention ratios. The strongest conclusion is relational: under a fixed
+protocol, some cues reliably move some readouts more than a matched lexical
+edit. A raw logit unit has no shared psychological meaning across attributes or
+models.
+
+\section{Limitations and ethics}
+
+The 100 base messages and their edits are authored. They cover several common
+assistant-use topics but are not a representative sample of natural dialogue.
+Fixed assistant turns are necessary to isolate the edited user cue, yet real
+assistants may respond differently to the two variants and create additional
+feedback effects.
+
+The three checkpoints do not isolate scale. Two are from the Llama family and
+one is OLMo 2; size, architecture, pretraining, and post-training all change.
+The results support cross-model agreement, not a claim that parameter count
+causes any difference. Proprietary systems and other model families may
+behave differently.
+
+Minimal pairs isolate a target cue but cannot make every linguistic dimension
+identical. Grammar rewrites are longer and somewhat more formal; disclosures
+and price qualifiers intentionally add content; slang can jointly alter era,
+register, capitalization, and affect. Matched random edits control ordinary
+lexical movement, not every possible correlated feature.
+
+Linear probes measure decodable structure at a selected hidden state. Their
+source conversations are synthetic and label-conditioned; both user and
+assistant language may carry regularities from that generation process. Strong
+held-out performance does not prove that the labels are portable to every
+domain or that a model uses the readout when generating an answer. Fixing all
+assistant messages within each evaluation pair prevents assistant responses
+from mediating the measured edit, but it does not turn the source task into a
+natural demographic sample. Suffix-paraphrase variation is a further warning
+against treating the instrument as context-free.
+
+Age, gender, education, and socioeconomic labels are coarse and normative.
+Inferring them from style can reproduce stereotypes, erase identities, and
+create privacy harms \citep{zaman2026privacy}. The reported outputs must not be
+presented as justified facts about a person. A practical use of this work is
+instead to test whether recommendations, moderation, or personalization change
+under harmless stylistic variation when they should not.
+
+\section{Conclusion}
+
+Small choices inside a conversation produce reproducible, attribute-specific
+changes in user readouts across 1,025 controlled pairs and 3B, 8B, and 32B
+instruction models. Disclosure most strongly moves age, grammar and
+orthography move education, price language moves socioeconomic status, and
+slang moves age in the full 3B experiment and on the shared three-model panel.
+The core map is stable, while emoji and several weaker cues change their
+dominant readout. Direct disclosure remains readable after later turns;
+several style effects fade at model-dependent rates.
+
+The result is deliberately narrow: it maps evidence that moves a fixed model
+impression, not truth about a user. Within that boundary, the breadth of the
+controlled dataset and the cross-model agreement make the central cue
+structure more credible while showing why individual cue rules should not be
+treated as universal.
+
+\begingroup
+\small
+\bibliographystyle{plainnat}
+\bibliography{refs}
+\endgroup
+
+\end{document}

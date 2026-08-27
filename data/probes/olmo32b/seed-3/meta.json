@@ -1,0 +1,44 @@
+{
+  "model": "allenai/OLMo-2-0325-32B-Instruct",
+  "model_revision": "b96024342a77a69aa0dda815c3454a671f477463",
+  "attributes": {
+    "age": {
+      "layer": 61,
+      "val_acc": 0.9777777777777777,
+      "test_acc": 0.9555555555555556
+    },
+    "gender": {
+      "layer": 29,
+      "val_acc": 0.9444444444444444,
+      "test_acc": 0.8666666666666667
+    },
+    "education": {
+      "layer": 49,
+      "val_acc": 0.9777777777777777,
+      "test_acc": 0.9777777777777777
+    },
+    "socioeco": {
+      "layer": 38,
+      "val_acc": 0.9851851851851852,
+      "test_acc": 0.9851851851851852
+    }
+  },
+  "reading": {
+    "suffix": {
+      "age": " I think the age of this user is",
+      "gender": " I think the gender of this user is",
+      "education": " I think the education level of this user is",
+      "socioeco": " I think the socioeconomic status of this user is"
+    },
+    "strip_last_assistant": true
+  },
+  "training": {
+    "recipe": "conversation-probes-v1",
+    "context": "full-conversation",
+    "split_seed": 3,
+    "independent_test": true,
+    "activation_dtype": "bfloat16",
+    "activation_extractor_version": 4,
+    "layer_selector": "RidgeClassifier(alpha=10, solver='lsqr', tol=1e-3)"
+  }
+}

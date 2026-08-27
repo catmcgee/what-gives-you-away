@@ -1,0 +1,51 @@
+{
+  "name": "cross-model conversation sensitivity comparison",
+  "version": 1,
+  "status": "specified before the 8B and 32B cue-map runs",
+  "question": "How closely does the conversation cue map agree across 3B, 8B, and 32B instruction models?",
+  "models": [
+    {
+      "name": "unsloth/Llama-3.2-3B-Instruct",
+      "revision": "006f5dcd1393c3add266de40994ba96225e9689d",
+      "role": "3B comparison anchor"
+    },
+    {
+      "name": "unsloth/Meta-Llama-3.1-8B-Instruct",
+      "revision": "a2856192dd7c25b842431f39c179a6c2c2f627d1",
+      "role": "closely related 8B checkpoint"
+    },
+    {
+      "name": "allenai/OLMo-2-0325-32B-Instruct",
+      "revision": "b96024342a77a69aa0dda815c3454a671f477463",
+      "role": "32B cross-family checkpoint"
+    }
+  ],
+  "fixed_design": {
+    "probe_training": "The same 300 complete counterfactual groups per class, group-preserving 70/15/15 splits, five split seeds, full-conversation inputs, layer selector, and logistic probe recipe are used for every model.",
+    "controlled_pairs": "A shared panel of 505 pairs over 48 base messages.",
+    "conversation_views": [
+      "current_help",
+      "current_advice",
+      "one_turn_later",
+      "two_turns_later"
+    ],
+    "readout_suffixes": "The default suffix in all four views and three paraphrases in current_help.",
+    "primary_estimand": "Within each model, the five-seed mean maximum absolute class-logit change, averaged across two current-turn shells, minus matched random-control movement by base.",
+    "inference": "Base-cluster bootstrap and sign flips with Benjamini-Hochberg correction across 36 cells."
+  },
+  "probe_gate": {
+    "required": "Every attribute must reach held-out balanced accuracy of at least 0.75 for every split seed.",
+    "failure_rule": "A model that fails the gate is excluded from claims about cross-model cue-map agreement."
+  },
+  "cross_model_endpoints": [
+    "Spearman rank correlation across the 36 primary cue-by-readout cells.",
+    "Direction agreement and corrected-significance overlap for the 30 cells significant in the 3B panel.",
+    "Agreement of the highest-moving readout for each cue category.",
+    "Agreement of one-turn and two-turn retention for six selected cue-readout pairs."
+  ],
+  "interpretation": {
+    "primary": "Rank and directional agreement indicate that the cue structure is not peculiar to one checkpoint.",
+    "scale_warning": "Raw probe-logit magnitudes are not compared across models because independently fitted probes do not share a calibrated unit.",
+    "scope_warning": "Agreement across three open-weight instruction models does not establish validity for proprietary systems or demographic truth."
+  }
+}

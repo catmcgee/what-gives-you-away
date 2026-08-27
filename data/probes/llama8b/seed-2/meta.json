@@ -1,0 +1,44 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "model_revision": "a2856192dd7c25b842431f39c179a6c2c2f627d1",
+  "attributes": {
+    "age": {
+      "layer": 31,
+      "val_acc": 0.9722222222222222,
+      "test_acc": 0.9666666666666667
+    },
+    "gender": {
+      "layer": 26,
+      "val_acc": 0.9555555555555556,
+      "test_acc": 0.9666666666666667
+    },
+    "education": {
+      "layer": 22,
+      "val_acc": 0.9555555555555556,
+      "test_acc": 0.9407407407407408
+    },
+    "socioeco": {
+      "layer": 22,
+      "val_acc": 0.9481481481481482,
+      "test_acc": 0.9851851851851852
+    }
+  },
+  "reading": {
+    "suffix": {
+      "age": " I think the age of this user is",
+      "gender": " I think the gender of this user is",
+      "education": " I think the education level of this user is",
+      "socioeco": " I think the socioeconomic status of this user is"
+    },
+    "strip_last_assistant": true
+  },
+  "training": {
+    "recipe": "conversation-probes-v1",
+    "context": "full-conversation",
+    "split_seed": 2,
+    "independent_test": true,
+    "activation_dtype": "bfloat16",
+    "activation_extractor_version": 4,
+    "layer_selector": "RidgeClassifier(alpha=10, solver='lsqr', tol=1e-3)"
+  }
+}

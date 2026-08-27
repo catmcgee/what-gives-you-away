@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wgya"
+version = "1.4.0"
+description = "Context-matched linguistic cue sensitivity in LLM user readouts"
+requires-python = ">=3.11"
+dependencies = [
+    "torch==2.12.1; platform_system == 'Darwin'",  # 2.13.0 hangs loading fp16 weights on MPS
+    "torch==2.4.1; platform_system != 'Darwin'",
+    "transformers==5.13.0",
+    "accelerate==1.12.0",
+    "scikit-learn==1.9.0",
+    "numpy==2.4.6",
+    "scipy==1.17.1",
+    "matplotlib==3.10.8",
+    "tqdm==4.67.3",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.0.2",
+]
+
+[tool.setuptools]
+packages = ["wgya"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

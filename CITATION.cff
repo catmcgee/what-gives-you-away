@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the paper below."
+title: "What Gives You Away? How Linguistic Cues Move User Readouts Across Three Language Models"
+type: software
+authors:
+  - family-names: McGee
+    given-names: Cat
+version: 1.4.0
+date-released: 2026-08-26
+license: MIT
+repository-code: "https://github.com/catmcgee/what-gives-you-away"
+url: "https://github.com/catmcgee/what-gives-you-away"
+abstract: >-
+  Code, controlled datasets, probe weights, and reproducible analyses for a
+  context-matched study of how linguistic cues move user-attribute readouts in
+  1,025 controlled 3B pairs and a matched 3B, 8B, and 32B comparison panel.
+preferred-citation:
+  type: article
+  title: "What Gives You Away? How Linguistic Cues Move User Readouts Across Three Language Models"
+  authors:
+    - family-names: McGee
+      given-names: Cat
+  year: 2026
