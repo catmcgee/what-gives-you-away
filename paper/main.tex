@@ -84,11 +84,13 @@ personalization and stereotype-driven user representations
 readouts to controlled input edits.
 
 \paragraph{Probing and interpretation.}
-The probing literature distinguishes decodable information from information a
-model uses in its own predictions \citep{hewitt2019probes,voita2020mdl,
-elazar2021amnesic}. Our paired contrast identifies the effect of a particular
-text edit on a fixed probe output in a constructed conversation. It says
-nothing by itself about label truth or downstream generation.
+Probe performance can reflect both information in a representation and
+properties of the probe, while intervention-based work separately tests
+whether encoded information affects model behavior
+\citep{hewitt2019probes,voita2020mdl,elazar2021amnesic}. Our paired contrast
+identifies the effect of a particular text edit on a fixed probe output in a
+constructed conversation. It says nothing by itself about label truth or
+downstream generation.
 
 Prompt sensitivity is a related measurement problem: small changes to an
 evaluation prompt can alter model scores without changing the underlying task
@@ -539,11 +541,13 @@ attributes or models. Accordingly, the cross-model analysis ranks cues within
 each readout.
 
 Age, gender, education, and socioeconomic labels are coarse and normative.
-Inferring them from style can reproduce stereotypes, erase identities, and
-create privacy harms \citep{zaman2026privacy}. The reported outputs must not be
-presented as justified facts about a person. A practical use of this work is
-instead to test whether recommendations, moderation, or personalization change
-under harmless stylistic variation when they should not.
+Inferring these attributes from style can reproduce stereotype-driven user
+representations and conflict with users' explicit identities
+\citep{neplenbroek2025implicit}; demographic inference from conversational
+logs also creates privacy risks \citep{zaman2026privacy}. The reported outputs
+must not be presented as justified facts about a person. A practical use of
+this work is instead to test whether recommendations, moderation, or
+personalization change under harmless stylistic variation when they should not.
 
 \section{Conclusion}
 
@@ -562,13 +566,13 @@ shift, or the role of the probed information in generated answers.
 \section*{Code and data availability}
 
 Code, controlled pairs, fitted probe parameters, row-level deltas, analysis
-outputs, and the source files for this paper are available in the public
-\href{https://github.com/catmcgee/what-gives-you-away/releases/tag/v1.5.0}{version
-1.5.0 release}. The release records the full model identifiers and immutable
-40-character revisions, the fixed study plans, software environments, and
-SHA-256 hashes for the principal artifacts. The source TalkTuner conversations
-used to fit the probes are governed by their upstream terms and are not
-redistributed here.
+outputs, and the source files for this paper are available in the versioned
+release at
+\url{https://github.com/catmcgee/what-gives-you-away/releases/tag/v1.5.1}.
+The release records the full model identifiers and immutable 40-character
+revisions, the fixed study plans, software environments, and SHA-256 hashes for
+the principal artifacts. The source TalkTuner conversations used to fit the
+probes are governed by their upstream terms and are not redistributed here.
 
 \begingroup
 \small

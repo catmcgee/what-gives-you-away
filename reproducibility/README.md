@@ -165,10 +165,10 @@ Recompute them with `shasum -a 256 <path>`.
 | `reproducibility/llama3b_environment.json` | `9bc653269800820b046b9c86eda6f14221835ba2ce112c854fcdbe2a43312559` |
 | `reproducibility/cross_model_llama3b_environment.json` | `70d9ee2eb046df1e62d78695c358430859e0ceda57d6f52e88aea1c0ddb21911` |
 | `reproducibility/cross_model_environment.json` | `51eafc94a1b2141af403ff5ac551cf9ea766d3d23cc6753472b9561245164c4f` |
-| `paper/main.tex` | `059ebe05217a3d972ab98dddd5674f884984d31341f222e76f8c2afa039c9855` |
+| `paper/main.tex` | `1df923b07ec52833ebcbbea9f323fc46f84fe372c50be8b5bef4fdced7bb45e9` |
 | `paper/refs.bib` | `44da042eae4b5de55c6c3ca78a3f928bca828bc2d5465b5179ef64ed1c1daacf` |
 | `paper/fig_conversation_sensitivity.pdf` | `dbf95bac64f9aeb30ca8e66f510aee200fe95e9ee4470ce8634590bb5af3a607` |
 | `paper/fig_cross_model.pdf` | `8807fd7a4c25c5465ab77d7961159432e9b81f2d246bf3238c5a7cccc2fd6904` |
-| `paper/main.pdf` | `58f4baa760f81f07c55c8cba6ccc5e059eacb4b7214c40c9c616fba286d623cc` |
+| `paper/main.pdf` | `da75261abfbbaec7cfb2b8d87a9138013edc4f83306307cc2c25279208f65c50` |
 
 <!-- ARTIFACT_HASHES_END -->

@@ -291,6 +291,9 @@ def test_arxiv_source_references_only_flat_local_assets():
 def test_manuscript_has_stable_release_and_llama32_source():
     manuscript = Path("paper/main.tex").read_text()
     references = Path("paper/refs.bib").read_text()
-    assert "releases/tag/v1.5.0" in manuscript
+    assert "releases/tag/v1.5.1" in manuscript
+    assert "\\url{https://github.com/catmcgee/what-gives-you-away/" in manuscript
+    assert "Probe performance can reflect both information" in manuscript
+    assert "conflict with users' explicit identities" in manuscript
     assert "\\citep{meta2024llama32}" in manuscript
     assert "ai.meta.com/blog/llama-3-2" in references
