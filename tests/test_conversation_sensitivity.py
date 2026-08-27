@@ -3,6 +3,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from scipy.stats import rankdata, spearmanr
+
 from scripts.analyze_conversation_sensitivity import (
     base_differences,
     measurements_for,
@@ -99,14 +101,17 @@ def test_cross_model_comparison_is_identity_on_same_summary():
         Path("results/cross_model/llama3b/summary_302951caa648.json").read_text()
     )
     result = compare(summary, summary)
-    assert result["spearman_rho"] == 1.0
+    assert result["rank_agreement"]["pooled_spearman_rho"] == 1.0
+    assert {
+        record["spearman_rho"]
+        for record in result["rank_agreement"]["by_readout"].values()
+    } == {1.0}
     assert result["direction_agreement"]["count"] == 30
     assert result["direction_agreement"]["fraction"] == 1.0
     assert result["direction_agreement"]["disagreements"] == []
     assert result["corrected_significance_overlap"]["count"] == 30
     assert result["corrected_significance_overlap"]["fraction"] == 1.0
     assert result["corrected_significance_overlap"]["not_significant"] == []
-    assert result["dominant_readout_agreement"]["count"] == 9
     for view in ("one_turn_later", "two_turns_later"):
         assert result["persistence"][view]["spearman_rho"] == 1.0
         assert result["persistence"][view]["mean_absolute_difference"] == 0.0
@@ -145,3 +150,147 @@ def test_released_cross_model_summary_matches_source_summaries():
         compare(reference, json.loads(path.read_text())) for path in candidate_paths
     ]
     assert result["comparisons"] == expected
+    source_summaries = [reference] + [
+        json.loads(path.read_text()) for path in candidate_paths
+    ]
+    assert {
+        summary["config"]["plan_sha"] for summary in source_summaries
+    } == {result["plan_sha256"][:12]}
+
+
+def test_manuscript_effect_table_matches_released_summary():
+    summary = json.loads(
+        Path("results/llama3b/summary_d61d45c5c48f.json").read_text()
+    )
+    matrix = summary["results"]["summaries"]["primary_current"]["matrix"]
+    manuscript = Path("paper/main.tex").read_text()
+    rows = (
+        ("disclosure", "age", "Personal context", "age"),
+        ("emoji", "age", "Emoji", "age"),
+        ("disclosure", "gender", "Personal context", "gender"),
+        ("emoji", "gender", "Emoji", "gender"),
+        ("grammar", "education", "Grammatical complexity", "education"),
+        ("disclosure", "education", "Personal context", "education"),
+        ("price", "socioeco", "Price language", "socioeconomic status"),
+        ("disclosure", "socioeco", "Personal context", "socioeconomic status"),
+    )
+    for category, attribute, cue_label, readout_label in rows:
+        estimate = matrix[category][attribute]["paired_vs_control"]
+        low, high = estimate["ci95"]
+        expected = (
+            f"{cue_label} & {readout_label} & {estimate['mean']:.3f} & "
+            f"[{low:.3f}, {high:.3f}] \\\\"
+        )
+        assert expected in manuscript
+
+
+def test_manuscript_cross_model_table_matches_released_summary():
+    result = json.loads(Path("results/cross_model/summary.json").read_text())
+    manuscript = Path("paper/main.tex").read_text()
+    labels = ("Llama 3.1 8B", "OLMo 2 32B")
+    for label, comparison in zip(labels, result["comparisons"], strict=True):
+        rank = comparison["rank_agreement"]
+        readout_rhos = [
+            record["spearman_rho"] for record in rank["by_readout"].values()
+        ]
+        pooled = f"{rank['pooled_spearman_rho']:.3f}".removeprefix("0")
+        low = f"{min(readout_rhos):.3f}".removeprefix("0")
+        high = f"{max(readout_rhos):.3f}".removeprefix("0")
+        expected = (
+            f"{label} & {pooled} & {low}--{high} & "
+            f"{comparison['direction_agreement']['count']}/"
+            f"{comparison['reference_significant_cells']} & "
+            f"{comparison['corrected_significance_overlap']['count']}/"
+            f"{comparison['reference_significant_cells']} \\\\"
+        )
+        assert expected in manuscript
+
+
+def test_manuscript_discloses_cross_model_analysis_change():
+    manuscript = Path("paper/main.tex").read_text()
+    assert "Departure from the planned cross-model endpoints" in manuscript
+    assert "post-plan change" in manuscript
+    assert "arbitrary scales" in manuscript
+
+
+def test_manuscript_panel_coverage_matches_released_3b_summaries():
+    paths = (
+        "results/llama3b/summary_d61d45c5c48f.json",
+        "results/cross_model/llama3b/summary_302951caa648.json",
+    )
+    matrices = [
+        json.loads(Path(path).read_text())["results"]["summaries"]
+        ["primary_current"]["matrix"]
+        for path in paths
+    ]
+    attributes = ("age", "gender", "education", "socioeco")
+    categories = sorted(category for category in matrices[0] if category != "control")
+
+    rank_maps = []
+    for matrix in matrices:
+        ranks = {}
+        for attribute in attributes:
+            values = [
+                matrix[category][attribute]["paired_vs_control"]["mean"]
+                for category in categories
+            ]
+            ranks.update(
+                {
+                    (category, attribute): rank
+                    for category, rank in zip(
+                        categories, rankdata(values), strict=True
+                    )
+                }
+            )
+        rank_maps.append(ranks)
+
+    keys = sorted(rank_maps[0])
+    pooled = spearmanr(
+        [rank_maps[0][key] for key in keys],
+        [rank_maps[1][key] for key in keys],
+    ).statistic
+    by_readout = []
+    for attribute in attributes:
+        selected = [key for key in keys if key[1] == attribute]
+        by_readout.append(
+            spearmanr(
+                [rank_maps[0][key] for key in selected],
+                [rank_maps[1][key] for key in selected],
+            ).statistic
+        )
+
+    assert round(pooled, 3) == 0.917
+    assert round(min(by_readout), 3) == 0.833
+    assert round(max(by_readout), 3) == 0.983
+    manuscript = Path("paper/main.tex").read_text()
+    assert "correlate $.917$ with the full 3B ranks" in manuscript
+    assert "range from $.833$ to $.983$" in manuscript
+
+
+def test_arxiv_source_references_only_flat_local_assets():
+    manuscript = Path("paper/main.tex").read_text()
+    expected_files = (
+        "paper/main.tex",
+        "paper/refs.bib",
+        "paper/fig_conversation_sensitivity.pdf",
+        "paper/fig_cross_model.pdf",
+    )
+    assert all(Path(path).is_file() for path in expected_files)
+    assert "../results/" not in manuscript
+    assert "{fig_conversation_sensitivity.pdf}" in manuscript
+    assert "{fig_cross_model.pdf}" in manuscript
+    assert "\\bibliography{refs}" in manuscript
+    assert Path("paper/fig_conversation_sensitivity.pdf").read_bytes() == Path(
+        "results/fig_conversation_sensitivity.pdf"
+    ).read_bytes()
+    assert Path("paper/fig_cross_model.pdf").read_bytes() == Path(
+        "results/fig_cross_model.pdf"
+    ).read_bytes()
+
+
+def test_manuscript_has_stable_release_and_llama32_source():
+    manuscript = Path("paper/main.tex").read_text()
+    references = Path("paper/refs.bib").read_text()
+    assert "releases/tag/v1.5.0" in manuscript
+    assert "\\citep{meta2024llama32}" in manuscript
+    assert "ai.meta.com/blog/llama-3-2" in references

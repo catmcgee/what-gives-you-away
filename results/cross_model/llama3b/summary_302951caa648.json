@@ -62,7 +62,7 @@
     "aggregate_n_perm": 10000,
     "aggregate_seed": 0
   },
-  "written_at": "2026-08-27T00:56:08.459927+00:00",
+  "written_at": "2026-08-27T16:57:30.911091+00:00",
   "results": {
     "attrs": [
       "age",
@@ -11543,35 +11543,63 @@
     },
     "comparisons": {
       "conversation_shells": {
-        "spearman_rho": 0.9963963963963964,
-        "spearman_p": 5.049084311904542e-38,
-        "mean_absolute_cell_change": 0.0359825050678469,
-        "worst_cell": "grammar|education",
-        "worst_cell_change": -0.23188459646674664,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.9916666666666668,
+        "spearman_p": 7.53425952119017e-32,
+        "spearman_rho_by_readout": {
+          "age": 1.0,
+          "education": 0.9833333333333333,
+          "gender": 0.9833333333333333,
+          "socioeco": 1.0
+        },
+        "mean_absolute_rank_change": 0.1111111111111111,
+        "worst_rank_cell": "disclosure|gender",
+        "worst_rank_change": -1.0,
         "n_cells": 36
       },
       "suffix_1_vs_default": {
-        "spearman_rho": 0.9266409266409267,
-        "spearman_p": 5.229496855032024e-16,
-        "mean_absolute_cell_change": 0.19781171891915605,
-        "worst_cell": "grammar|education",
-        "worst_cell_change": -1.5333042811466537,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.9208333333333335,
+        "spearman_p": 1.824873020506115e-15,
+        "spearman_rho_by_readout": {
+          "age": 0.9833333333333333,
+          "education": 0.7999999999999999,
+          "gender": 0.9166666666666666,
+          "socioeco": 0.9833333333333333
+        },
+        "mean_absolute_rank_change": 0.6111111111111112,
+        "worst_rank_cell": "orthography|education",
+        "worst_rank_change": -3.0,
         "n_cells": 36
       },
       "suffix_2_vs_default": {
-        "spearman_rho": 0.908880308880309,
-        "spearman_p": 1.8140144315198098e-14,
-        "mean_absolute_cell_change": 0.1743036323606537,
-        "worst_cell": "grammar|education",
-        "worst_cell_change": -1.1367513748060452,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.9041666666666668,
+        "spearman_p": 4.119750255797057e-14,
+        "spearman_rho_by_readout": {
+          "age": 1.0,
+          "education": 0.8666666666666667,
+          "gender": 0.8499999999999999,
+          "socioeco": 0.9
+        },
+        "mean_absolute_rank_change": 0.7222222222222222,
+        "worst_rank_cell": "orthography|education",
+        "worst_rank_change": -3.0,
         "n_cells": 36
       },
       "suffix_3_vs_default": {
-        "spearman_rho": 0.9536679536679538,
-        "spearman_p": 2.6113527687107993e-19,
-        "mean_absolute_cell_change": 0.2393815381724013,
-        "worst_cell": "grammar|education",
-        "worst_cell_change": -1.5470477461349224,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.9208333333333335,
+        "spearman_p": 1.824873020506115e-15,
+        "spearman_rho_by_readout": {
+          "age": 0.9666666666666667,
+          "education": 0.8166666666666667,
+          "gender": 0.9333333333333332,
+          "socioeco": 0.9666666666666667
+        },
+        "mean_absolute_rank_change": 0.6666666666666666,
+        "worst_rank_cell": "affect|education",
+        "worst_rank_change": 3.0,
         "n_cells": 36
       }
     },

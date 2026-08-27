@@ -1,13 +1,36 @@
 {
   "plan": "reproducibility/cross_model_plan.json",
   "plan_sha256": "25591b2972bb1a8381be7ba748943d6ae94b5424a7da88b300e92e182d01d4cd",
-  "estimand": "Cross-model rank, sign, corrected-significance, dominant-readout, and retention agreement; raw independently fitted probe-logit magnitudes are not compared across models.",
+  "estimand": "Cross-model within-readout cue-rank, sign, corrected-significance, and retention agreement; raw independently fitted probe-logit magnitudes are not compared across readouts or models.",
+  "analysis_deviation": "The study plan's pooled 36-cell rank and highest-moving-readout endpoints compare separately scaled probes. They are replaced here with cue ranks computed within each readout. Cell-level effects, inference, and retention endpoints are unchanged.",
   "comparisons": [
     {
       "reference_model": "unsloth/Llama-3.2-3B-Instruct",
       "candidate_model": "unsloth/Meta-Llama-3.1-8B-Instruct",
       "n_cells": 36,
-      "spearman_rho": 0.9271557271557272,
+      "rank_agreement": {
+        "scope": "cue ranks computed separately within each readout",
+        "n_cells": 36,
+        "pooled_spearman_rho": 0.9375000000000001,
+        "by_readout": {
+          "age": {
+            "n_cues": 9,
+            "spearman_rho": 0.9500000000000001
+          },
+          "education": {
+            "n_cues": 9,
+            "spearman_rho": 0.9833333333333333
+          },
+          "gender": {
+            "n_cues": 9,
+            "spearman_rho": 0.8499999999999999
+          },
+          "socioeco": {
+            "n_cues": 9,
+            "spearman_rho": 0.9666666666666667
+          }
+        }
+      },
       "reference_significant_cells": 30,
       "reference_significant_cell_names": [
         "affect|age",
@@ -117,42 +140,6 @@
           "formality|gender"
         ]
       },
-      "dominant_readout_agreement": {
-        "count": 8,
-        "fraction": 0.8888888888888888,
-        "matched_cues": [
-          "affect",
-          "dialect",
-          "disclosure",
-          "formality",
-          "grammar",
-          "orthography",
-          "price",
-          "slang"
-        ],
-        "reference": {
-          "affect": "socioeco",
-          "dialect": "education",
-          "disclosure": "age",
-          "emoji": "gender",
-          "formality": "age",
-          "grammar": "education",
-          "orthography": "education",
-          "price": "socioeco",
-          "slang": "age"
-        },
-        "candidate": {
-          "affect": "socioeco",
-          "dialect": "education",
-          "disclosure": "age",
-          "emoji": "age",
-          "formality": "age",
-          "grammar": "education",
-          "orthography": "education",
-          "price": "socioeco",
-          "slang": "age"
-        }
-      },
       "persistence": {
         "one_turn_later": {
           "reference": {
@@ -202,7 +189,29 @@
       "reference_model": "unsloth/Llama-3.2-3B-Instruct",
       "candidate_model": "allenai/OLMo-2-0325-32B-Instruct",
       "n_cells": 36,
-      "spearman_rho": 0.848906048906049,
+      "rank_agreement": {
+        "scope": "cue ranks computed separately within each readout",
+        "n_cells": 36,
+        "pooled_spearman_rho": 0.8500000000000002,
+        "by_readout": {
+          "age": {
+            "n_cues": 9,
+            "spearman_rho": 0.9
+          },
+          "education": {
+            "n_cues": 9,
+            "spearman_rho": 0.8166666666666667
+          },
+          "gender": {
+            "n_cues": 9,
+            "spearman_rho": 0.8333333333333333
+          },
+          "socioeco": {
+            "n_cues": 9,
+            "spearman_rho": 0.8499999999999999
+          }
+        }
+      },
       "reference_significant_cells": 30,
       "reference_significant_cell_names": [
         "affect|age",
@@ -311,40 +320,6 @@
         "not_significant": [
           "dialect|education"
         ]
-      },
-      "dominant_readout_agreement": {
-        "count": 6,
-        "fraction": 0.6666666666666666,
-        "matched_cues": [
-          "disclosure",
-          "formality",
-          "grammar",
-          "orthography",
-          "price",
-          "slang"
-        ],
-        "reference": {
-          "affect": "socioeco",
-          "dialect": "education",
-          "disclosure": "age",
-          "emoji": "gender",
-          "formality": "age",
-          "grammar": "education",
-          "orthography": "education",
-          "price": "socioeco",
-          "slang": "age"
-        },
-        "candidate": {
-          "affect": "age",
-          "dialect": "age",
-          "disclosure": "age",
-          "emoji": "age",
-          "formality": "age",
-          "grammar": "education",
-          "orthography": "education",
-          "price": "socioeco",
-          "slang": "age"
-        }
       },
       "persistence": {
         "one_turn_later": {

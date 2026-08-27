@@ -10,7 +10,7 @@ health, finance/shopping, and work/study.
 | Category | Pairs |
 |---|---:|
 | Orthography | 184 |
-| Explicit disclosure | 111 |
+| Personal context | 111 |
 | Emoji | 100 |
 | Grammatical complexity | 100 |
 | Random-synonym control | 100 |
@@ -22,7 +22,14 @@ health, finance/shopping, and work/study.
 
 The 3B experiment evaluates all 1,025 pairs. A fixed 505-pair panel over 48
 base messages is evaluated in 3B, 8B, and 32B models to support like-for-like
-cross-model comparisons.
+cross-model comparisons. The panel contains every pair belonging to the first
+48 base identifiers in canonical dataset order. This deterministic selection
+was fixed before the 8B and 32B runs; it was not random or stratified.
+
+The internal category key `disclosure` is displayed as *personal context*.
+These edits include direct personal statements and indirect contextual markers
+such as family references or retirement; they do not always state the target
+attribute explicitly.
 
 ## Files
 

@@ -197,15 +197,29 @@ def compare_matrices(reference: dict, candidate: dict, attrs: list[str]) -> dict
     candidate_keys, candidate_values = matrix_effects(candidate, attrs)
     if reference_keys != candidate_keys:
         raise ValueError("matrix keys do not align")
-    rho, p_value = stats.spearmanr(reference_values, candidate_values)
-    differences = candidate_values - reference_values
+    reference_ranks = np.empty_like(reference_values)
+    candidate_ranks = np.empty_like(candidate_values)
+    by_readout = {}
+    for attr in attrs:
+        selected = np.asarray([key.endswith(f"|{attr}") for key in reference_keys])
+        reference_ranks[selected] = stats.rankdata(reference_values[selected])
+        candidate_ranks[selected] = stats.rankdata(candidate_values[selected])
+        by_readout[attr] = float(
+            stats.spearmanr(
+                reference_ranks[selected], candidate_ranks[selected]
+            ).statistic
+        )
+    rho, p_value = stats.spearmanr(reference_ranks, candidate_ranks)
+    differences = candidate_ranks - reference_ranks
     worst_index = int(np.argmax(np.abs(differences)))
     return {
+        "rank_scope": "cue ranks computed separately within each readout",
         "spearman_rho": float(rho),
         "spearman_p": float(p_value),
-        "mean_absolute_cell_change": float(np.mean(np.abs(differences))),
-        "worst_cell": reference_keys[worst_index],
-        "worst_cell_change": float(differences[worst_index]),
+        "spearman_rho_by_readout": by_readout,
+        "mean_absolute_rank_change": float(np.mean(np.abs(differences))),
+        "worst_rank_cell": reference_keys[worst_index],
+        "worst_rank_change": float(differences[worst_index]),
         "n_cells": len(reference_keys),
     }
 

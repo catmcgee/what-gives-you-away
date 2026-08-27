@@ -18,6 +18,7 @@ PERSISTENCE_CELLS = (
     ("grammar", "education"),
     ("orthography", "education"),
 )
+ATTRIBUTES = ("age", "education", "gender", "socioeco")
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -69,14 +70,47 @@ def primary_cells(summary: dict) -> dict[str, dict[str, float]]:
     }
 
 
-def dominant_readouts(summary: dict) -> dict[str, str]:
-    matrix = summary["results"]["summaries"]["primary_current"]["matrix"]
-    return {
-        category: max(
-            attributes,
-            key=lambda attribute: attributes[attribute]["paired_vs_control"]["mean"],
+def within_readout_rank_agreement(
+    reference_cells: dict[str, dict[str, float]],
+    candidate_cells: dict[str, dict[str, float]],
+) -> dict:
+    """Compare cue order separately for each readout.
+
+    Probe logits have no common scale across independently fitted readouts. Ranking
+    the nine cues within each readout removes that arbitrary between-probe scale.
+    """
+    reference_ranks = []
+    candidate_ranks = []
+    by_readout = {}
+    for attribute in ATTRIBUTES:
+        keys = sorted(
+            key for key in reference_cells if key.endswith(f"|{attribute}")
         )
-        for category, attributes in matrix.items()
+        reference_effects = np.asarray(
+            [reference_cells[key]["effect"] for key in keys], dtype=float
+        )
+        candidate_effects = np.asarray(
+            [candidate_cells[key]["effect"] for key in keys], dtype=float
+        )
+        reference_attribute_ranks = stats.rankdata(reference_effects)
+        candidate_attribute_ranks = stats.rankdata(candidate_effects)
+        reference_ranks.extend(reference_attribute_ranks)
+        candidate_ranks.extend(candidate_attribute_ranks)
+        by_readout[attribute] = {
+            "n_cues": len(keys),
+            "spearman_rho": float(
+                stats.spearmanr(
+                    reference_attribute_ranks, candidate_attribute_ranks
+                ).statistic
+            ),
+        }
+    return {
+        "scope": "cue ranks computed separately within each readout",
+        "n_cells": len(reference_ranks),
+        "pooled_spearman_rho": float(
+            stats.spearmanr(reference_ranks, candidate_ranks).statistic
+        ),
+        "by_readout": by_readout,
     }
 
 
@@ -121,13 +155,7 @@ def compare(reference: dict, candidate: dict) -> dict:
     if keys != sorted(candidate_cells):
         raise ValueError("primary cue matrices do not contain the same cells")
 
-    reference_effects = np.asarray(
-        [reference_cells[key]["effect"] for key in keys], dtype=float
-    )
-    candidate_effects = np.asarray(
-        [candidate_cells[key]["effect"] for key in keys], dtype=float
-    )
-    rho = stats.spearmanr(reference_effects, candidate_effects).statistic
+    rank_agreement = within_readout_rank_agreement(reference_cells, candidate_cells)
     reference_significant = [key for key in keys if reference_cells[key]["q_bh"] < 0.05]
     sign_agreement = [
         key
@@ -139,18 +167,11 @@ def compare(reference: dict, candidate: dict) -> dict:
         key for key in reference_significant if candidate_cells[key]["q_bh"] < 0.05
     ]
 
-    reference_dominant = dominant_readouts(reference)
-    candidate_dominant = dominant_readouts(candidate)
-    matched_cues = [
-        category
-        for category in sorted(reference_dominant)
-        if reference_dominant[category] == candidate_dominant[category]
-    ]
     return {
         "reference_model": model_name(reference),
         "candidate_model": model_name(candidate),
         "n_cells": len(keys),
-        "spearman_rho": float(rho),
+        "rank_agreement": rank_agreement,
         "reference_significant_cells": len(reference_significant),
         "reference_significant_cell_names": reference_significant,
         "candidate_significant_cells": sum(
@@ -169,13 +190,6 @@ def compare(reference: dict, candidate: dict) -> dict:
             "not_significant": sorted(
                 set(reference_significant) - set(corrected_overlap)
             ),
-        },
-        "dominant_readout_agreement": {
-            "count": len(matched_cues),
-            "fraction": len(matched_cues) / len(reference_dominant),
-            "matched_cues": matched_cues,
-            "reference": reference_dominant,
-            "candidate": candidate_dominant,
         },
         "persistence": {
             view: compare_persistence(reference, candidate, view)
@@ -208,9 +222,15 @@ def main() -> None:
         "plan": portable_path(args.plan),
         "plan_sha256": hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         "estimand": (
-            "Cross-model rank, sign, corrected-significance, dominant-readout, and "
-            "retention agreement; raw independently fitted probe-logit magnitudes are "
-            "not compared across models."
+            "Cross-model within-readout cue-rank, sign, corrected-significance, and "
+            "retention agreement; raw independently fitted probe-logit magnitudes "
+            "are not compared across readouts or models."
+        ),
+        "analysis_deviation": (
+            "The study plan's pooled 36-cell rank and highest-moving-readout "
+            "endpoints compare separately scaled probes. They are replaced here "
+            "with cue ranks computed within each readout. Cell-level effects, "
+            "inference, and retention endpoints are unchanged."
         ),
         "comparisons": [compare(reference, candidate) for candidate in candidates],
     }
@@ -226,12 +246,12 @@ def main() -> None:
     print(f"Wrote {args.output}")
     for record in output["comparisons"]:
         print(
-            f"{record['candidate_model']}: rho={record['spearman_rho']:.3f}, "
+            f"{record['candidate_model']}: within-readout rho="
+            f"{record['rank_agreement']['pooled_spearman_rho']:.3f}, "
             f"direction={record['direction_agreement']['count']}/"
             f"{record['reference_significant_cells']}, "
             f"q-overlap={record['corrected_significance_overlap']['count']}/"
-            f"{record['reference_significant_cells']}, "
-            f"dominant={record['dominant_readout_agreement']['count']}/9"
+            f"{record['reference_significant_cells']}"
         )
 
 

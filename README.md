@@ -24,56 +24,61 @@ correction across 36 comparisons.*
 
 ![Cross-model cue-map agreement](results/fig_cross_model.png)
 
-*Within-model ranks for the 36 primary cells. Ranks avoid treating separately
-fitted probe logits as though they shared a calibrated unit.*
+*Cue ranks computed separately within each readout for the 36 primary cells.
+This avoids treating separately fitted probe logits as though they shared a
+calibrated unit.*
 
 ## Main finding
 
-The model readouts respond to a stable core of cues, while weaker assignments
-vary across checkpoints:
+The readouts respond to a repeatable ordering of cues, with some differences
+across checkpoints:
 
 - In the 1,025-pair 3B experiment, 30 of 36 cue-by-readout effects survive
   correction. Twenty-eight exceed the matched lexical-edit floor.
-- Disclosure most strongly moves age, grammar and orthography move education,
-  price language moves socioeconomic status, and slang moves age.
-- On the shared panel, the 8B cue map correlates `.927` with 3B and the 32B map
-  correlates `.849`. All 30 corrected 3B effects keep their direction; 29 remain
-  corrected-significant in each larger model.
-- Emoji are the clearest exception: gender is strongest in the 3B panel, while
-  age is strongest in the full 3B experiment, 8B, and 32B.
-- Independently worded conversation shells produce `rho=.987-.995`; three
-  readout-suffix paraphrases produce `rho=.842-.962` within models.
-- Direct disclosure remains readable after later turns. Several surface-style
+- Within the age readout, personal context and slang rank highly. Grammar and
+  personal context lead education; price and personal context lead
+  socioeconomic status.
+- On the shared panel, pooled within-readout cue-rank correlations are `.938`
+  for 8B against 3B and `.850` for 32B against 3B. All 30 corrected 3B effects
+  keep their sign; 29 remain corrected-significant in each larger model.
+- The gender ordering varies more: emoji ranks first at 3B and third in both
+  larger models, behind personal context and slang.
+- Independently worded conversation shells produce `rho=.967-.992`; three
+  readout-phrase paraphrases produce `rho=.875-.933` within models.
+- Personal-context age movement persists after later turns. Several style
   effects, especially grammar and orthography, attenuate more quickly.
 
 Selected 3B effects:
 
 | Cue | Readout | Extra movement | 95% CI |
 |---|---|---:|---:|
-| Explicit disclosure | Age | 1.756 | [1.515, 1.996] |
-| Grammatical complexity | Education | 1.458 | [1.238, 1.685] |
-| Explicit disclosure | Education | 1.448 | [1.183, 1.734] |
-| Price language | Socioeconomic status | 0.915 | [0.777, 1.056] |
-| Emoji | Age | 0.565 | [0.479, 0.659] |
-| Slang | Age | 0.547 | [0.434, 0.672] |
+| Personal context | Age | 1.756 | [1.517, 2.003] |
+| Emoji | Age | 0.565 | [0.479, 0.655] |
+| Personal context | Gender | 0.625 | [0.492, 0.767] |
+| Emoji | Gender | 0.466 | [0.348, 0.600] |
+| Grammatical complexity | Education | 1.458 | [1.233, 1.680] |
+| Personal context | Education | 1.448 | [1.185, 1.726] |
+| Price language | Socioeconomic status | 0.915 | [0.774, 1.053] |
+| Personal context | Socioeconomic status | 0.860 | [0.721, 1.005] |
 
-These are causal changes in fixed TalkTuner-style readouts: each pair differs
-at exactly one user turn, and all surrounding dialogue is held constant. They
-are not evidence that a demographic label is true, context-invariant, or
-appropriate to infer about a real person.
+Each pair differs at one user turn and holds the surrounding dialogue fixed.
+The values compare cues within the same readout; separate probes do not share a
+logit scale. The outcome measures absolute movement, not whether a class moved
+toward older, younger, or another direction. It is not evidence that a
+demographic label is true or appropriate to infer about a person.
 
 ## Design
 
 | Component | Specification |
 |---|---|
 | Models | Llama 3.2 3B, Llama 3.1 8B, and OLMo 2 32B at pinned revisions |
-| Controlled data | 1,025 minimal pairs over 100 bases at 3B; fixed 505-pair cross-model panel |
+| Controlled data | 1,025 minimal pairs over 100 bases at 3B; deterministic 505-pair cross-model panel |
 | Conversation contexts | Two current-turn shells, one turn later, two turns later |
 | Readouts | Age, gender, education, and socioeconomic status |
 | Probe ensembles | Five separately fitted full-conversation seeds per model |
 | Primary estimate | Cue movement minus the matched random-synonym floor |
 | Inference | Base-cluster bootstrap and sign flips; BH correction over 36 cells |
-| Cross-model endpoints | Cell ranks, signs, corrected significance, dominant readout, retention |
+| Cross-model endpoints | Within-readout cue ranks, signs, corrected significance, retention |
 | Within-model robustness | Shell wording, three suffix paraphrases, probe seeds, temporal delay |
 
 The probes were trained on complete conversations, so the experiment also uses
@@ -97,6 +102,10 @@ wgya/                    probe, metric, I/O, and statistical utilities
 
 Every reported number can be recomputed from the released compressed deltas
 without downloading model weights or using a GPU.
+
+The arXiv source is flat and self-contained in [`paper/`](paper/). Upload
+`main.tex`, `refs.bib`, `fig_conversation_sensitivity.pdf`, and
+`fig_cross_model.pdf`; arXiv should treat `main.tex` as the top-level file.
 
 ## Reproduce
 

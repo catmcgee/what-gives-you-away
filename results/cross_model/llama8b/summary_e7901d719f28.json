@@ -62,7 +62,7 @@
     "aggregate_n_perm": 10000,
     "aggregate_seed": 0
   },
-  "written_at": "2026-08-27T00:56:51.567322+00:00",
+  "written_at": "2026-08-27T16:58:12.720356+00:00",
   "results": {
     "attrs": [
       "age",
@@ -11543,35 +11543,63 @@
     },
     "comparisons": {
       "conversation_shells": {
-        "spearman_rho": 0.9873873873873874,
-        "spearman_p": 8.369499012418455e-29,
-        "mean_absolute_cell_change": 0.04102884566071498,
-        "worst_cell": "dialect|education",
-        "worst_cell_change": -0.1468547817878426,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.9666666666666667,
+        "spearman_p": 1.0696705011359316e-21,
+        "spearman_rho_by_readout": {
+          "age": 1.0,
+          "education": 0.9166666666666666,
+          "gender": 0.9500000000000001,
+          "socioeco": 1.0
+        },
+        "mean_absolute_rank_change": 0.2777777777777778,
+        "worst_rank_cell": "dialect|education",
+        "worst_rank_change": -2.0,
         "n_cells": 36
       },
       "suffix_1_vs_default": {
-        "spearman_rho": 0.9407979407979409,
-        "spearman_p": 1.5252802171227943e-17,
-        "mean_absolute_cell_change": 0.21709648772620646,
-        "worst_cell": "slang|age",
-        "worst_cell_change": -0.7580103952260244,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.8833333333333334,
+        "spearman_p": 9.894729281096632e-13,
+        "spearman_rho_by_readout": {
+          "age": 0.9500000000000001,
+          "education": 0.7166666666666667,
+          "gender": 0.9,
+          "socioeco": 0.9666666666666667
+        },
+        "mean_absolute_rank_change": 0.8333333333333334,
+        "worst_rank_cell": "affect|education",
+        "worst_rank_change": 3.0,
         "n_cells": 36
       },
       "suffix_2_vs_default": {
-        "spearman_rho": 0.8424710424710425,
-        "spearman_p": 1.1737694429743547e-10,
-        "mean_absolute_cell_change": 0.19968304145580368,
-        "worst_cell": "slang|socioeco",
-        "worst_cell_change": -0.6570452142684233,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.8958333333333334,
+        "spearman_p": 1.5916577950321566e-13,
+        "spearman_rho_by_readout": {
+          "age": 1.0,
+          "education": 0.6666666666666667,
+          "gender": 0.9500000000000001,
+          "socioeco": 0.9666666666666667
+        },
+        "mean_absolute_rank_change": 0.6666666666666666,
+        "worst_rank_cell": "emoji|education",
+        "worst_rank_change": -4.0,
         "n_cells": 36
       },
       "suffix_3_vs_default": {
-        "spearman_rho": 0.9451737451737452,
-        "spearman_p": 4.2772595433046404e-18,
-        "mean_absolute_cell_change": 0.22261028819509227,
-        "worst_cell": "grammar|education",
-        "worst_cell_change": -0.7120847540238173,
+        "rank_scope": "cue ranks computed separately within each readout",
+        "spearman_rho": 0.9333333333333333,
+        "spearman_p": 1.0835926231134914e-16,
+        "spearman_rho_by_readout": {
+          "age": 0.9500000000000001,
+          "education": 0.8833333333333333,
+          "gender": 0.9,
+          "socioeco": 1.0
+        },
+        "mean_absolute_rank_change": 0.5555555555555556,
+        "worst_rank_cell": "price|education",
+        "worst_rank_change": 3.0,
         "n_cells": 36
       }
     },

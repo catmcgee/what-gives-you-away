@@ -50,7 +50,8 @@ def test_every_conversation_pair_changes_one_user_turn():
 
 
 def test_cross_model_panel_is_a_fixed_subset():
-    full = {row["pair_id"]: row for row in read_jsonl("data/minimal_pairs.jsonl")}
+    full_rows = read_jsonl("data/minimal_pairs.jsonl")
+    full = {row["pair_id"]: row for row in full_rows}
     panel = read_jsonl("data/cross_model_minimal_pairs.jsonl")
     conversations = read_jsonl("data/cross_model_conversation_minimal_pairs.jsonl")
 
@@ -61,6 +62,9 @@ def test_cross_model_panel_is_a_fixed_subset():
     assert Counter(row["pair_id"] for row in conversations) == {
         row["pair_id"]: 4 for row in panel
     }
+    base_order = list(dict.fromkeys(row["base_id"] for row in full_rows))
+    assert {row["base_id"] for row in panel} == set(base_order[:48])
+    assert panel == [row for row in full_rows if row["base_id"] in base_order[:48]]
 
 
 def test_pair_metadata_and_controls_are_valid():

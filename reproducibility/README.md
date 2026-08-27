@@ -152,19 +152,23 @@ Recompute them with `shasum -a 256 <path>`.
 | `data/probes/llama8b/training_report.json` | `dfb4659403ea046352418c520b7a6513a000e6dc8248db1a7f9ee67d2cfb306d` |
 | `data/probes/olmo32b/training_report.json` | `dfce9884bd3e27137c679cc7993cc61ba916d949e4311ecac30eee1d1a18c6ed` |
 | `results/llama3b/deltas_d61d45c5c48f.json.gz` | `06f8046e33b499df8e40da2231962502d90b056d10f4698512dc0164254657f2` |
-| `results/llama3b/summary_d61d45c5c48f.json` | `73940b64ef91c9bee5c00a2c30ff229ec819e711bd0f7e08096b750d6df9d7d9` |
+| `results/llama3b/summary_d61d45c5c48f.json` | `ba8d3c68a7c5eae51b73dbe9ed449e36802a4d466af79f36922a3e8dfa0ac685` |
 | `results/cross_model/llama3b/deltas_302951caa648.json.gz` | `e91733feca1586c0ccd69459cfc232bf8818257526d3ffd3df91953d14e442eb` |
-| `results/cross_model/llama3b/summary_302951caa648.json` | `332fadd4b59f901363a905ee76b8e8d8edba83e87f30982c915618580393bf4a` |
+| `results/cross_model/llama3b/summary_302951caa648.json` | `1090a112417092170e6e86471b040bd1e46ff9a73870280f704a15baf3bbdbef` |
 | `results/cross_model/llama8b/deltas_e7901d719f28.json.gz` | `1caddd0e69dc0467ce1e982072b9ba7ce009f26e0b01dea3dfb75d2b9e6c89d8` |
-| `results/cross_model/llama8b/summary_e7901d719f28.json` | `74241e3257a1e42099d53f28e1ee4c603ea95f5346929e67f606abb469372402` |
+| `results/cross_model/llama8b/summary_e7901d719f28.json` | `acbf580aca43caca396506448e94054976b43a11f96e9e5ae20b9c548d7449cf` |
 | `results/cross_model/olmo32b/deltas_90c18609ce4f.json.gz` | `a8b8175653ed1606327e0487750084efc54a615f7f5cecbe7ca2bf7a32b51b74` |
-| `results/cross_model/olmo32b/summary_90c18609ce4f.json` | `28c968b5be38679a95efd4aeced095758940265d22a613d6e6e177c00493ff4c` |
-| `results/cross_model/summary.json` | `1a64c333fe7c0b7fdea97693cf4111497223c0b63fcf84586c3fc488c01dfd08` |
+| `results/cross_model/olmo32b/summary_90c18609ce4f.json` | `e87a9e7d1ab452143a35cf48963fbeb95ed27ba98f01ccb727877b0c2ba40c52` |
+| `results/cross_model/summary.json` | `01aba1e3a7f64e5bf299007e1ac1fb59155cbc13156d44be127b23a0daa44cdd` |
 | `reproducibility/study_plan.json` | `c7e97625eb94c711e9767091eb935fd3c107962937505920800f1c34ec09c538` |
 | `reproducibility/cross_model_plan.json` | `25591b2972bb1a8381be7ba748943d6ae94b5424a7da88b300e92e182d01d4cd` |
 | `reproducibility/llama3b_environment.json` | `9bc653269800820b046b9c86eda6f14221835ba2ce112c854fcdbe2a43312559` |
 | `reproducibility/cross_model_llama3b_environment.json` | `70d9ee2eb046df1e62d78695c358430859e0ceda57d6f52e88aea1c0ddb21911` |
 | `reproducibility/cross_model_environment.json` | `51eafc94a1b2141af403ff5ac551cf9ea766d3d23cc6753472b9561245164c4f` |
-| `paper/main.pdf` | `58cf9d54d90106a7b082353dc79afa6d578c72eaf3ce74e0df9b68608d1ffe10` |
+| `paper/main.tex` | `059ebe05217a3d972ab98dddd5674f884984d31341f222e76f8c2afa039c9855` |
+| `paper/refs.bib` | `44da042eae4b5de55c6c3ca78a3f928bca828bc2d5465b5179ef64ed1c1daacf` |
+| `paper/fig_conversation_sensitivity.pdf` | `dbf95bac64f9aeb30ca8e66f510aee200fe95e9ee4470ce8634590bb5af3a607` |
+| `paper/fig_cross_model.pdf` | `8807fd7a4c25c5465ab77d7961159432e9b81f2d246bf3238c5a7cccc2fd6904` |
+| `paper/main.pdf` | `58f4baa760f81f07c55c8cba6ccc5e059eacb4b7214c40c9c616fba286d623cc` |
 
 <!-- ARTIFACT_HASHES_END -->

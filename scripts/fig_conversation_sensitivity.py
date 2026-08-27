@@ -25,6 +25,7 @@ matplotlib.rcParams.update(
         "xtick.labelsize": 8.2,
         "ytick.labelsize": 8.2,
         "figure.dpi": 200,
+        "pdf.fonttype": 42,
         "savefig.bbox": "tight",
     }
 )
@@ -48,7 +49,7 @@ CATEGORIES = [
     "formality",
 ]
 CATEGORY_LABELS = {
-    "disclosure": "explicit disclosure",
+    "disclosure": "personal context",
     "affect": "affect language",
     "grammar": "grammatical complexity",
     "price": "price language",
@@ -159,7 +160,7 @@ def main() -> None:
             label=label,
         )
     short_categories = {
-        "disclosure": "disclosure",
+        "disclosure": "personal context",
         "price": "price language",
         "emoji": "emoji",
         "slang": "slang",

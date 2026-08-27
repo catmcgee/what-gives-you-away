@@ -1,4 +1,4 @@
-"""Plot cross-model agreement using within-model cue-map ranks."""
+"""Plot cross-model agreement using cue ranks computed within each readout."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ matplotlib.rcParams.update(
         "xtick.labelsize": 8,
         "ytick.labelsize": 8,
         "figure.dpi": 200,
+        "pdf.fonttype": 42,
         "savefig.bbox": "tight",
     }
 )
@@ -53,6 +54,14 @@ def cells(summary: dict) -> tuple[list[str], np.ndarray]:
     return keys, effects
 
 
+def within_readout_ranks(keys: list[str], effects: np.ndarray) -> np.ndarray:
+    ranks = np.empty_like(effects, dtype=float)
+    for attr in ATTRS:
+        selected = np.asarray([key.endswith(f"|{attr}") for key in keys])
+        ranks[selected] = rankdata(effects[selected])
+    return ranks
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("reference", type=Path)
@@ -65,7 +74,7 @@ def main() -> None:
     reference = load(args.reference)
     candidates = [load(path) for path in args.candidates]
     reference_keys, reference_effects = cells(reference)
-    reference_ranks = rankdata(reference_effects)
+    reference_ranks = within_readout_ranks(reference_keys, reference_effects)
     reference_name = MODEL_LABELS.get(
         reference["config"]["model"], reference["config"]["model"]
     )
@@ -77,8 +86,8 @@ def main() -> None:
         candidate_keys, candidate_effects = cells(candidate)
         if candidate_keys != reference_keys:
             raise ValueError("cue matrices do not contain the same cells")
-        candidate_ranks = rankdata(candidate_effects)
-        rho = float(spearmanr(reference_effects, candidate_effects).statistic)
+        candidate_ranks = within_readout_ranks(candidate_keys, candidate_effects)
+        rho = float(spearmanr(reference_ranks, candidate_ranks).statistic)
 
         for attr in ATTRS:
             selected = np.asarray([key.endswith(f"|{attr}") for key in reference_keys])
@@ -94,12 +103,20 @@ def main() -> None:
             )
 
         disagreements = np.argsort(np.abs(candidate_ranks - reference_ranks))[-3:]
+        annotation_counts: dict[tuple[float, float], int] = {}
+        annotation_offsets = ((4, 4), (4, -10), (4, 14))
         for cell_index in disagreements:
             category, attr = reference_keys[cell_index].split("|")
+            point = (
+                float(reference_ranks[cell_index]),
+                float(candidate_ranks[cell_index]),
+            )
+            occurrence = annotation_counts.get(point, 0)
+            annotation_counts[point] = occurrence + 1
             ax.annotate(
                 f"{category}/{attr}",
-                (reference_ranks[cell_index], candidate_ranks[cell_index]),
-                xytext=(4, 4),
+                point,
+                xytext=annotation_offsets[min(occurrence, 2)],
                 textcoords="offset points",
                 fontsize=6.6,
                 color="#383838",
@@ -108,9 +125,15 @@ def main() -> None:
         candidate_name = MODEL_LABELS.get(
             candidate["config"]["model"], candidate["config"]["model"]
         )
-        ax.plot([0, 37], [0, 37], color="#999999", lw=0.9, ls="--", zorder=0)
-        ax.set(xlim=(0, 37), ylim=(0, 37), xlabel=f"{reference_name} cell rank")
-        ax.set_ylabel(f"{candidate_name} cell rank")
+        ax.plot([0.5, 9.5], [0.5, 9.5], color="#999999", lw=0.9, ls="--", zorder=0)
+        ax.set(
+            xlim=(0.5, 9.5),
+            ylim=(0.5, 9.5),
+            xticks=range(1, 10),
+            yticks=range(1, 10),
+            xlabel=f"{reference_name} cue rank within readout",
+        )
+        ax.set_ylabel(f"{candidate_name} cue rank within readout")
         ax.set_title(
             f"({chr(97 + index)}) {reference_name} vs {candidate_name}\n"
             rf"Spearman $\rho$ = {rho:.3f}",
